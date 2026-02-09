@@ -8,12 +8,16 @@ nforge is a config-driven CLI tool for managing the build, sync, and publish wor
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  nforge binary (Rust shim)                                   │
-│  src/main.rs — ~30 lines                                     │
+│  nforge binary (Rust, embeds Luau source)                    │
+│  src/main.rs — zero external deps                            │
 │                                                              │
-│  1. Locates luau/ directory next to the executable           │
-│  2. Forwards all arguments to: lune run luau/nforge -- args  │
-│  3. Exits with the same exit code as Lune                    │
+│  1. If luau/ exists next to binary: use it (development)     │
+│  2. Otherwise: extract embedded files to cache (distribution)│
+│  3. Forwards all arguments to: lune run luau/nforge -- args  │
+│  4. Exits with the same exit code as Lune                    │
+│                                                              │
+│  Cache: %LOCALAPPDATA%\nforge\ (Win) / ~/.nforge/ (Unix)    │
+│  Only re-extracts when version changes                       │
 └──────────────────────┬───────────────────────────────────────┘
                        │ spawns
                        ▼
@@ -314,7 +318,7 @@ This is a convenience wrapper — it calls the same code paths as running `nforg
 nforge/
   Cargo.toml                    Rust shim package definition (zero dependencies)
   src/
-    main.rs                     Rust shim: find luau/ dir, spawn lune, forward exit code
+    main.rs                     Rust binary: embeds luau/ source, extracts to cache, spawns lune
   luau/
     nforge.luau                 Entry point: parse first arg, dispatch to command module
     commands/

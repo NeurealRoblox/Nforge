@@ -22,11 +22,11 @@ nforge is a unified command-line tool that orchestrates the common Roblox develo
 
 nforge has two parts:
 
-1. **Rust shim** (`src/main.rs`) — A tiny compiled binary (~200KB) that finds the Luau source next to it and runs `lune run <path> -- <args>`. This is what gets distributed via aftman/GitHub releases.
+1. **Rust binary** (`src/main.rs`) — A compiled binary that embeds all Luau source at build time. On first run it extracts the Luau files to a cache directory, then forwards to `lune run <path> -- <args>`. Distributed as a single binary via aftman/GitHub releases.
 
 2. **Luau source** (`luau/`) — All the actual logic. Written in Luau, runs on Lune. This is what contributors read and modify.
 
-When you run `nforge publish --dry-run`, the binary just forwards to `lune run luau/nforge -- publish --dry-run`.
+When you run `nforge publish --dry-run`, the binary forwards to `lune run luau/nforge -- publish --dry-run`. In development, if `luau/` exists next to the binary, it uses that directly instead of the embedded cache.
 
 ## Requirements
 
@@ -45,13 +45,13 @@ cd nforge
 cargo build --release
 ```
 
-Copy `target/release/nforge.exe` (or `nforge` on Mac/Linux) **and the `luau/` directory** to a location on your PATH. The binary must be able to find `luau/` next to it.
+Copy `target/release/nforge.exe` (or `nforge` on Mac/Linux) to a location on your PATH. The Luau source is embedded in the binary — no need to copy `luau/` separately.
 
-### Via aftman (once published)
+### Via aftman
 
 Add to your project's `aftman.toml`:
 ```toml
-nforge = "your-org/nforge@0.1.0"
+nforge = "NeurealRoblox/Nforge@0.1.0"
 ```
 
 ## Setup
@@ -220,9 +220,13 @@ nforge completions zsh >> ~/.zshrc           # Zsh
 nforge completions fish > ~/.config/fish/completions/nforge.fish
 ```
 
+## Credits
+
+The original Luau implementation was written by [Nezuo](https://github.com/Nezuo). The current version was refit into a standalone CLI tool and extended with additional commands using [Claude Code](https://claude.ai/claude-code) (AI-assisted). Large parts of this codebase are vibecoded — please review accordingly and report any issues you find.
+
 ## Contributing
 
-All logic lives in `luau/`. The Rust shim (`src/main.rs`) rarely needs changes.
+All logic lives in `luau/`. The Rust binary (`src/main.rs`) embeds the Luau source at compile time but rarely needs changes.
 
 ```
 luau/
