@@ -116,8 +116,9 @@ local function run(args: { string })
 		return
 	end
 
-	-- Pre-flight: check all build files exist
+	-- Pre-flight: check all build files exist and warn about stale builds
 	local allValid = true
+	local hasStale = false
 	local cwd = process.cwd
 	for _, entry in targetsToPublish do
 		local buildPath = `{cwd}/{entry.target.build}`
@@ -125,6 +126,20 @@ local function run(args: { string })
 			Reporter.checkOk(
 				`target '{entry.name}' -> {entry.target.build} (place {entry.target.place_id})`
 			)
+
+			-- Warn if the build file is older than 24 hours
+			local meta = fs.metadata(buildPath)
+			if meta.modifiedAt then
+				local ageSeconds = os.time() - meta.modifiedAt.unixTimestamp
+				if ageSeconds > 86400 then
+					local ageDays = math.floor(ageSeconds / 86400)
+					Reporter.checkFail(
+						`target '{entry.name}' freshness`,
+						`Build file is {ageDays} day(s) old. Consider running 'nforge sync' first.`
+					)
+					hasStale = true
+				end
+			end
 		else
 			Reporter.checkFail(
 				`target '{entry.name}'`,

@@ -10,11 +10,15 @@ local commands = {
 	open = require("./commands/open"),
 	["open-map"] = require("./commands/open-map"),
 	sync = require("./commands/sync"),
+	diff = require("./commands/diff"),
 	publish = require("./commands/publish"),
+	deploy = require("./commands/deploy"),
 	plugins = require("./commands/plugins"),
 	install = require("./commands/install"),
 	lint = require("./commands/lint"),
 	run = require("./commands/run"),
+	status = require("./commands/status"),
+	completions = require("./commands/completions"),
 }
 
 local HELP_TEXT = [[
@@ -29,12 +33,17 @@ COMMANDS:
     open-map <name>             Open a named place in Roblox Studio
     sync [targets...] [--dry-run]
                                 Read places, copy services per sync.luau, write .rbxl to builds/
+    diff [targets...]           Preview what sync would change without writing
     publish [targets...] [--dry-run] [--max-uploads N]
                                 Upload .rbxl files to Roblox via Open Cloud API
+    deploy [targets...] [--dry-run]
+                                Sync and publish in one step
     plugins [--only <name>]     Build Studio plugins defined in nforge.toml
     install                     Install dependencies (wally + sourcemap + type patching)
     lint [--fix]                Run linter (selene) and formatter (stylua)
     run <script> [args...]      Run a Lune script from the project's lune/ directory
+    status                      Show project status (config, builds, env, tools)
+    completions <shell>         Generate shell completions (bash, zsh, fish, powershell)
     help                        Show this help message
 
 OPTIONS:

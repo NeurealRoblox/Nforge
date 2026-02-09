@@ -10,10 +10,13 @@ nforge is a unified command-line tool that orchestrates the common Roblox develo
 - **Build** Rojo projects and open them in Studio
 - **Sync** code and assets between multiple places (lobby, arena, etc.)
 - **Publish** places to Roblox via the Open Cloud API
+- **Deploy** sync + publish in a single command
+- **Diff** preview what sync would change before committing
 - **Install** Wally dependencies with type patching
 - **Build** Studio plugins
 - **Lint** with Selene and StyLua
 - **Run** game-specific Lune scripts
+- **Status** dashboard showing project state at a glance
 
 ## Architecture
 
@@ -150,12 +153,29 @@ nforge sync lobby        # sync only lobby
 nforge sync --dry-run    # validate config only
 ```
 
+### `nforge diff [targets...]`
+Preview what `nforge sync` would change without writing anything.
+```bash
+nforge diff              # diff all sync targets
+nforge diff lobby        # diff only lobby
+```
+
+Downloads the source and target places and compares services, children, and tagged items. Shows additions and removals so you know exactly what sync will do.
+
 ### `nforge publish [targets...] [--dry-run] [--max-uploads N]`
-Upload `.rbxl` files to Roblox via Open Cloud API.
+Upload `.rbxl` files to Roblox via Open Cloud API. Warns if build files are more than 24 hours old.
 ```bash
 nforge publish               # publish all targets
 nforge publish lobby          # publish only lobby
 nforge publish --dry-run      # validate without uploading
+```
+
+### `nforge deploy [targets...] [--dry-run]`
+Run sync then publish in one step. The most common workflow for shipping changes.
+```bash
+nforge deploy              # sync all, then publish all
+nforge deploy lobby        # sync and publish only lobby
+nforge deploy --dry-run    # validate both steps
 ```
 
 ### `nforge plugins [--only <name>]`
@@ -185,6 +205,21 @@ nforge run get-map main output.rbxl
 nforge run import-schematic MySchematic data.json
 ```
 
+### `nforge status`
+Show project status: config summary, build file freshness, environment variables, and installed tools.
+```bash
+nforge status
+```
+
+### `nforge completions <shell>`
+Generate shell completion scripts for tab-completion of commands and flags.
+```bash
+nforge completions powershell >> $PROFILE   # PowerShell
+nforge completions bash >> ~/.bashrc         # Bash
+nforge completions zsh >> ~/.zshrc           # Zsh
+nforge completions fish > ~/.config/fish/completions/nforge.fish
+```
+
 ## Contributing
 
 All logic lives in `luau/`. The Rust shim (`src/main.rs`) rarely needs changes.
@@ -197,11 +232,15 @@ luau/
     open.luau              # nforge open
     open-map.luau          # nforge open-map
     sync.luau              # nforge sync (place download, service copying)
+    diff.luau              # nforge diff (preview sync changes)
     publish.luau           # nforge publish (Open Cloud upload)
+    deploy.luau            # nforge deploy (sync + publish pipeline)
     plugins.luau           # nforge plugins
     install.luau           # nforge install
     lint.luau              # nforge lint
     run.luau               # nforge run
+    status.luau            # nforge status
+    completions.luau       # nforge completions
   util/
     config.luau            # nforge.toml parser
     reporter.luau          # Colored console output

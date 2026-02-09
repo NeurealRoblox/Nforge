@@ -199,6 +199,21 @@ Response: { data: [{ id, name, ... }], nextPageCursor, previousPageCursor }
 
 **Error handling:** Per-service [OK]/[FAIL] reporting. Fails fast on first error per target.
 
+### nforge diff [targets...]
+
+**Purpose:** Preview what `nforge sync` would change without writing any files.
+
+**Flow:**
+1. Load `nforge.toml` and evaluate `sync.luau` (same as sync command)
+2. Download source + target places concurrently via asset delivery API
+3. For each target, compare:
+   a. Services: child names present in source but not target (additions) and vice versa (removals)
+   b. StarterPlayer children: presence and child count differences
+   c. Workspace tagged items: count differences per tag
+4. Print a summary of additions and removals
+
+**Authentication:** Same as sync (ROBLOSECURITY cookie).
+
 ### nforge publish [targets...] [--dry-run] [--max-uploads N]
 
 **Purpose:** Upload .rbxl files to Roblox.
@@ -221,7 +236,20 @@ Body: <raw .rbxl binary>
 
 **Retry policy:** 5 attempts with exponential backoff (1s, 1.5s, 2.25s, 3.4s, 5s).
 
+**Stale build warnings:** Before uploading, checks each build file's modification time. If older than 24 hours, prints a warning suggesting the user run `nforge sync` first.
+
 **Error handling:** Per-target progress with [OK]/[FAIL]. Reports HTTP status and response body on failure. Summary at end showing succeeded vs failed.
+
+### nforge deploy [targets...] [--dry-run]
+
+**Purpose:** Run sync then publish in a single command.
+
+**Flow:**
+1. Run the sync command handler with the provided args
+2. Run the publish command handler with the same args
+3. If either step fails, the pipeline stops with an error
+
+This is a convenience wrapper — it calls the same code paths as running `nforge sync` and `nforge publish` separately.
 
 ### nforge plugins [--only <name>]
 
@@ -260,6 +288,26 @@ Body: <raw .rbxl binary>
 1. Verify `lune/` directory exists
 2. Run `lune run <script> -- <args...>`
 
+### nforge status
+
+**Purpose:** Show a dashboard of the current project state.
+
+**Sections:**
+1. **Project** — name and universe ID from nforge.toml
+2. **Places** — all defined places with IDs
+3. **Builds** — for each place, whether a build file exists in builds/ and its age
+4. **Publish targets** — targets with build file status
+5. **Environment** — whether OPEN_CLOUD_API_KEY and ROBLOSECURITY are set
+6. **Tools** — whether lune, rojo, wally, selene, stylua are installed
+
+### nforge completions <shell>
+
+**Purpose:** Generate shell completion scripts for tab-completion.
+
+**Supported shells:** bash, zsh, fish, powershell
+
+**Output:** Prints the completion script to stdout. User redirects to their shell config file.
+
 ## Source File Map
 
 ```
@@ -274,11 +322,15 @@ nforge/
       open.luau                 Build + open + serve
       open-map.luau             Open place in Studio via protocol URL
       sync.luau                 Download places, copy services, write .rbxl
+      diff.luau                 Preview sync changes without writing
       publish.luau              Upload .rbxl via Open Cloud API
+      deploy.luau               Sync + publish pipeline
       plugins.luau              Build Studio plugins
       install.luau              Wally install + sourcemap + type patching
       lint.luau                 Selene + StyLua
       run.luau                  Lune script passthrough
+      status.luau               Project status dashboard
+      completions.luau          Shell completion generator
     util/
       config.luau               Parse nforge.toml, resolve place names/aliases
       reporter.luau             Colored [CHECK], [OK], [FAIL] console output
