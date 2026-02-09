@@ -3,7 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::{Command, ExitCode};
 
-const VERSION: &str = "0.1.0";
+const VERSION: &str = "0.2.0";
 
 struct EmbeddedFile {
     path: &'static str,

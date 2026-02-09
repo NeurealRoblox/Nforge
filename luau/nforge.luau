@@ -45,7 +45,7 @@ OPTIONS:
     --version, -V               Show version
 ]]
 
-local VERSION = "0.1.0"
+local VERSION = "0.2.0"
 
 local args = process.args
 local command = args[1]
