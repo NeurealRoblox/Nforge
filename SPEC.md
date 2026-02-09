@@ -38,7 +38,6 @@ nforge is a config-driven CLI tool for managing the build, sync, and publish wor
 │  sync.luau            Place sync definitions (Luau)          │
 │  .env                 Secrets (gitignored)                   │
 │  default.project.json Rojo config                            │
-│  lune/                Game-specific scripts                  │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -47,11 +46,8 @@ nforge is a config-driven CLI tool for managing the build, sync, and publish wor
 | Dependency | Version | Used by |
 |------------|---------|---------|
 | Lune | 0.9+ | All commands (runtime) |
-| Rojo | 7.x | `open`, `install`, `plugins` |
-| Wally | 0.3+ | `install`, `plugins` |
-| wally-package-types | 1.x | `install` |
-| Selene | 0.28+ | `lint` |
-| StyLua | 2.x | `lint` |
+| Rojo | 7.x | `open`, `plugins` |
+| Wally | 0.3+ | `plugins` |
 
 ## Configuration
 
@@ -265,33 +261,6 @@ This is a convenience wrapper — it calls the same code paths as running `nforg
    a. If `wally.toml` exists in plugin dir: run `wally install`
    b. Run `rojo build <path> -o <output>`
 
-### nforge install
-
-**Purpose:** Install Wally dependencies and set up type information.
-
-**Flow:**
-1. Run `wally install`
-2. Run `rojo sourcemap -o sourcemap.json`
-3. For each of `Packages/`, `ServerPackages/`, `DevPackages/`:
-   - If directory exists: run `wally-package-types --sourcemap sourcemap.json <dir>`
-
-### nforge lint [--fix]
-
-**Purpose:** Run code quality tools.
-
-**Flow:**
-1. Run `selene .`
-2. Run `stylua --check .` (or `stylua .` if `--fix`)
-3. Report combined pass/fail status
-
-### nforge run <script> [args...]
-
-**Purpose:** Run a Lune script from the project's `lune/` directory.
-
-**Flow:**
-1. Verify `lune/` directory exists
-2. Run `lune run <script> -- <args...>`
-
 ### nforge status
 
 **Purpose:** Show a dashboard of the current project state.
@@ -330,9 +299,6 @@ nforge/
       publish.luau              Upload .rbxl via Open Cloud API
       deploy.luau               Sync + publish pipeline
       plugins.luau              Build Studio plugins
-      install.luau              Wally install + sourcemap + type patching
-      lint.luau                 Selene + StyLua
-      run.luau                  Lune script passthrough
       status.luau               Project status dashboard
       completions.luau          Shell completion generator
     util/

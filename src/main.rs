@@ -50,18 +50,6 @@ const EMBEDDED_FILES: &[EmbeddedFile] = &[
         content: include_str!("../luau/commands/plugins.luau"),
     },
     EmbeddedFile {
-        path: "commands/install.luau",
-        content: include_str!("../luau/commands/install.luau"),
-    },
-    EmbeddedFile {
-        path: "commands/lint.luau",
-        content: include_str!("../luau/commands/lint.luau"),
-    },
-    EmbeddedFile {
-        path: "commands/run.luau",
-        content: include_str!("../luau/commands/run.luau"),
-    },
-    EmbeddedFile {
         path: "commands/status.luau",
         content: include_str!("../luau/commands/status.luau"),
     },

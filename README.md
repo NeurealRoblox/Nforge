@@ -12,10 +12,7 @@ nforge is a unified command-line tool that orchestrates the common Roblox develo
 - **Publish** places to Roblox via the Open Cloud API
 - **Deploy** sync + publish in a single command
 - **Diff** preview what sync would change before committing
-- **Install** Wally dependencies with type patching
 - **Build** Studio plugins
-- **Lint** with Selene and StyLua
-- **Run** game-specific Lune scripts
 - **Status** dashboard showing project state at a glance
 
 ## Architecture
@@ -32,8 +29,7 @@ When you run `nforge publish --dry-run`, the binary forwards to `lune run luau/n
 
 - [Lune](https://lune-org.github.io/docs) 0.9+ (for running the Luau source)
 - [Rojo](https://rojo.space) (for build/serve commands)
-- [Wally](https://wally.run) (for install command)
-- Other tools as needed: Selene, StyLua, wally-package-types
+- [Wally](https://wally.run) (for plugins command, if plugins use Wally)
 
 ## Installation
 
@@ -191,26 +187,6 @@ nforge plugins                # build all
 nforge plugins --only my-plugin
 ```
 
-### `nforge install`
-Install Wally dependencies, generate sourcemap, and patch types.
-```bash
-nforge install
-```
-
-### `nforge lint [--fix]`
-Run Selene linter and StyLua formatter.
-```bash
-nforge lint          # check mode
-nforge lint --fix    # auto-fix formatting
-```
-
-### `nforge run <script> [args...]`
-Run a Lune script from the project's `lune/` directory.
-```bash
-nforge run get-map main output.rbxl
-nforge run import-schematic MySchematic data.json
-```
-
 ### `nforge status`
 Show project status: config summary, build file freshness, environment variables, and installed tools.
 ```bash
@@ -246,9 +222,6 @@ luau/
     publish.luau           # nforge publish (Open Cloud upload)
     deploy.luau            # nforge deploy (sync + publish pipeline)
     plugins.luau           # nforge plugins
-    install.luau           # nforge install
-    lint.luau              # nforge lint
-    run.luau               # nforge run
     status.luau            # nforge status
     completions.luau       # nforge completions
   util/

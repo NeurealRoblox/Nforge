@@ -14,9 +14,6 @@ local commands = {
 	publish = require("./commands/publish"),
 	deploy = require("./commands/deploy"),
 	plugins = require("./commands/plugins"),
-	install = require("./commands/install"),
-	lint = require("./commands/lint"),
-	run = require("./commands/run"),
 	status = require("./commands/status"),
 	completions = require("./commands/completions"),
 }
@@ -39,9 +36,6 @@ COMMANDS:
     deploy [targets...] [--dry-run]
                                 Sync and publish in one step
     plugins [--only <name>]     Build Studio plugins defined in nforge.toml
-    install                     Install dependencies (wally + sourcemap + type patching)
-    lint [--fix]                Run linter (selene) and formatter (stylua)
-    run <script> [args...]      Run a Lune script from the project's lune/ directory
     status                      Show project status (config, builds, env, tools)
     completions <shell>         Generate shell completions (bash, zsh, fish, powershell)
     help                        Show this help message

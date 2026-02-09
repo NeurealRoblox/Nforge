@@ -23,12 +23,10 @@ local COMMANDS = {
 	"open",
 	"open-map",
 	"sync",
+	"diff",
 	"publish",
 	"deploy",
 	"plugins",
-	"install",
-	"lint",
-	"run",
 	"status",
 	"completions",
 	"help",
@@ -48,9 +46,6 @@ local function bashCompletions(): string
 		.. `    case "$prev" in\n`
 		.. `        sync|publish|deploy)\n`
 		.. `            COMPREPLY=( $(compgen -W "--dry-run --help" -- "$cur") )\n`
-		.. `            ;;\n`
-		.. `        lint)\n`
-		.. `            COMPREPLY=( $(compgen -W "--fix --help" -- "$cur") )\n`
 		.. `            ;;\n`
 		.. `        plugins)\n`
 		.. `            COMPREPLY=( $(compgen -W "--only --help" -- "$cur") )\n`
@@ -80,9 +75,6 @@ local function zshCompletions(): string
 		.. `        'publish:Upload places to Roblox via Open Cloud API'\n`
 		.. `        'deploy:Sync and publish in one step'\n`
 		.. `        'plugins:Build Studio plugins'\n`
-		.. `        'install:Install dependencies'\n`
-		.. `        'lint:Run linter and formatter'\n`
-		.. `        'run:Run a Lune script'\n`
 		.. `        'status:Show project status'\n`
 		.. `        'completions:Generate shell completions'\n`
 		.. `        'help:Show help message'\n`
@@ -98,9 +90,6 @@ local function zshCompletions(): string
 		.. `            case $words[1] in\n`
 		.. `                sync|publish|deploy)\n`
 		.. `                    _arguments '--dry-run[Validate without executing]' '--help[Show help]'\n`
-		.. `                    ;;\n`
-		.. `                lint)\n`
-		.. `                    _arguments '--fix[Auto-fix formatting]' '--help[Show help]'\n`
 		.. `                    ;;\n`
 		.. `                plugins)\n`
 		.. `                    _arguments '--only[Build specific plugin]:name:' '--help[Show help]'\n`
@@ -127,14 +116,10 @@ local function fishCompletions(): string
 		"complete -c nforge -n '__fish_use_subcommand' -a 'publish' -d 'Upload places via Open Cloud'",
 		"complete -c nforge -n '__fish_use_subcommand' -a 'deploy' -d 'Sync and publish in one step'",
 		"complete -c nforge -n '__fish_use_subcommand' -a 'plugins' -d 'Build Studio plugins'",
-		"complete -c nforge -n '__fish_use_subcommand' -a 'install' -d 'Install dependencies'",
-		"complete -c nforge -n '__fish_use_subcommand' -a 'lint' -d 'Run linter and formatter'",
-		"complete -c nforge -n '__fish_use_subcommand' -a 'run' -d 'Run a Lune script'",
 		"complete -c nforge -n '__fish_use_subcommand' -a 'status' -d 'Show project status'",
 		"complete -c nforge -n '__fish_use_subcommand' -a 'completions' -d 'Generate shell completions'",
 		"complete -c nforge -n '__fish_use_subcommand' -a 'help' -d 'Show help'",
 		"complete -c nforge -n '__fish_seen_subcommand_from sync publish deploy' -l dry-run -d 'Validate without executing'",
-		"complete -c nforge -n '__fish_seen_subcommand_from lint' -l fix -d 'Auto-fix formatting'",
 		"complete -c nforge -n '__fish_seen_subcommand_from plugins' -l only -d 'Build specific plugin' -r",
 		"complete -c nforge -n '__fish_seen_subcommand_from completions' -a 'bash zsh fish powershell'",
 	}
@@ -154,9 +139,6 @@ local function powershellCompletions(): string
 		.. "        @{ Name = 'publish'; Desc = 'Upload places via Open Cloud' },\n"
 		.. "        @{ Name = 'deploy'; Desc = 'Sync and publish in one step' },\n"
 		.. "        @{ Name = 'plugins'; Desc = 'Build Studio plugins' },\n"
-		.. "        @{ Name = 'install'; Desc = 'Install dependencies' },\n"
-		.. "        @{ Name = 'lint'; Desc = 'Run linter and formatter' },\n"
-		.. "        @{ Name = 'run'; Desc = 'Run a Lune script' },\n"
 		.. "        @{ Name = 'status'; Desc = 'Show project status' },\n"
 		.. "        @{ Name = 'completions'; Desc = 'Generate shell completions' },\n"
 		.. "        @{ Name = 'help'; Desc = 'Show help' }\n"
