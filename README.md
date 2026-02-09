@@ -40,18 +40,24 @@ When you run `nforge publish --dry-run`, the binary forwards to `lune run luau/n
 ### From source
 
 ```bash
-git clone https://github.com/your-org/nforge.git
+git clone https://github.com/NeurealRoblox/Nforge.git
 cd nforge
 cargo build --release
 ```
 
 Copy `target/release/nforge.exe` (or `nforge` on Mac/Linux) to a location on your PATH. The Luau source is embedded in the binary — no need to copy `luau/` separately.
 
-### Via aftman
+### Via aftman (recommended)
 
 Add to your project's `aftman.toml`:
 ```toml
+[tools]
 nforge = "NeurealRoblox/Nforge@0.1.0"
+```
+
+Then run:
+```bash
+aftman install
 ```
 
 ## Setup
