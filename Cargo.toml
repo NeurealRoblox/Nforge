@@ -1,0 +1,7 @@
+[package]
+name = "nforge"
+version = "0.1.0"
+edition = "2021"
+description = "Generic Roblox build, sync, and publish CLI — thin shim that forwards to Luau source"
+
+[dependencies]
