@@ -6,6 +6,7 @@ local process = require("@lune/process")
 local stdio = require("@lune/stdio")
 
 local commands = {
+	init = require("./commands/init"),
 	open = require("./commands/open"),
 	["open-map"] = require("./commands/open-map"),
 	sync = require("./commands/sync"),
@@ -23,6 +24,7 @@ USAGE:
     nforge <COMMAND> [OPTIONS] [ARGS]
 
 COMMANDS:
+    init [universe-id]          Initialize or refresh nforge.toml from the Roblox API
     open [project]              Build a Rojo project, open in Studio, and start live sync
     open-map <name>             Open a named place in Roblox Studio
     sync [targets...] [--dry-run]

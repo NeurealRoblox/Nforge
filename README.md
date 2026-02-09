@@ -6,6 +6,7 @@ Generic Roblox build, sync, and publish CLI. Config-driven, works with any Roblo
 
 nforge is a unified command-line tool that orchestrates the common Roblox development workflow:
 
+- **Init** a project by auto-discovering places from the Roblox API
 - **Build** Rojo projects and open them in Studio
 - **Sync** code and assets between multiple places (lobby, arena, etc.)
 - **Publish** places to Roblox via the Open Cloud API
@@ -114,6 +115,19 @@ Add `.env` to your `.gitignore`.
 
 ## Commands
 
+### `nforge init [universe-id]`
+Initialize or refresh `nforge.toml` by fetching places from the Roblox API.
+```bash
+nforge init 1234567890   # Create nforge.toml for a universe
+nforge init              # Refresh: add any new places to existing config
+```
+
+When creating a fresh config, place names from Roblox are converted to config-friendly slugs (e.g. "Main Lobby v2" becomes `main-lobby-v2`). The project name defaults to the current directory name.
+
+When refreshing, only new places (by ID) are added. Existing entries are never modified or removed.
+
+Requires `ROBLOSECURITY` to be set for private universes.
+
 ### `nforge open [project]`
 Build a Rojo project, open in Studio, and start live sync.
 ```bash
@@ -179,6 +193,7 @@ All logic lives in `luau/`. The Rust shim (`src/main.rs`) rarely needs changes.
 luau/
   nforge.luau              # Entry point (arg parsing, dispatch)
   commands/
+    init.luau              # nforge init
     open.luau              # nforge open
     open-map.luau          # nforge open-map
     sync.luau              # nforge sync (place download, service copying)

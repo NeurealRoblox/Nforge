@@ -114,6 +114,44 @@ ROBLOSECURITY=...        — Optional, for `sync` (falls back to Studio cookie)
 
 ## Command Specifications
 
+### nforge init [universe-id]
+
+**Purpose:** Initialize or refresh nforge.toml by fetching places from the Roblox API.
+
+**Modes:**
+
+1. **Fresh init** (`nforge init <universe-id>`):
+   - Fails if `nforge.toml` already exists
+   - Fetches all places in the universe via Roblox API
+   - Generates slug keys from place display names (lowercase, non-alphanum to hyphens)
+   - Derives project name from current directory name
+   - Writes `nforge.toml` with `[project]` and `[places]` sections
+
+2. **Refresh** (`nforge init` with existing config):
+   - Reads existing `nforge.toml` to get `universe_id`
+   - Fetches current places from API
+   - Adds any places whose IDs don't already exist in config
+   - Re-serializes and writes the file (comments are lost)
+
+**Roblox API call:**
+```
+GET https://develop.roblox.com/v1/universes/{universeId}/places?limit=100&sortOrder=Asc&cursor={cursor}
+Headers:
+  Cookie: .ROBLOSECURITY=<cookie>  (optional, for private universes)
+  Accept: application/json
+Response: { data: [{ id, name, ... }], nextPageCursor, previousPageCursor }
+```
+
+**Pagination:** Loops with `cursor` param until `nextPageCursor` is nil. Uses `limit=100` (API maximum).
+
+**Slug algorithm:**
+1. Lowercase the place name
+2. Replace runs of non-alphanumeric characters with a single hyphen
+3. Trim leading/trailing hyphens
+4. Deduplicate: if slug exists, append `-2`, `-3`, etc.
+
+**Authentication:** ROBLOSECURITY from environment variable. Optional for public universes, required for private ones. Gives a specific error on 401/403.
+
 ### nforge open [project]
 
 **Purpose:** Build a Rojo project, open in Studio, start live sync.
@@ -232,6 +270,7 @@ nforge/
   luau/
     nforge.luau                 Entry point: parse first arg, dispatch to command module
     commands/
+      init.luau                 Initialize/refresh nforge.toml from Roblox API
       open.luau                 Build + open + serve
       open-map.luau             Open place in Studio via protocol URL
       sync.luau                 Download places, copy services, write .rbxl
