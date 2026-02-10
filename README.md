@@ -48,7 +48,7 @@ Copy `target/release/nforge.exe` (or `nforge` on Mac/Linux) to a location on you
 Add to your project's `aftman.toml`:
 ```toml
 [tools]
-nforge = "NeurealRoblox/Nforge@0.2.0"
+nforge = "NeurealRoblox/Nforge@0.1.0"
 ```
 
 Then run:
